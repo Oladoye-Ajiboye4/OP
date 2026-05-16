@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Ping — Smart Reminder Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <meta name="description"
+        content="Send recurring WhatsApp reminders driven from a Google Sheet. Connect, schedule, and forget.">
+    <style>
+        :root {
+            --bg: #0f1724;
+            --card: #0b1220;
+            --muted: #94a3b8;
+            --accent: #7c3aed;
+            --accent-2: #06b6d4;
+            --glass: rgba(255, 255, 255, 0.03);
+            --radius: 14px;
+            color-scheme: dark;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            height: 100%
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, system-ui, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(180deg, #071024 0%, #071a2a 60%);
+            color: #e6eef8;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            line-height: 1.35;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 48px auto;
+            padding: 28px
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px
+        }
+
+        .logo {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: 18px
+        }
+
+        .tag {
+            color: var(--muted);
+            font-size: 13px
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: 28px;
+            margin-top: 28px;
+            align-items: center
+        }
+
+        .hero-left {
+            padding: 28px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
+            border-radius: var(--radius)
+        }
+
+        .eyebrow {
+            display: inline-block;
+            padding: 6px 10px;
+            background: var(--glass);
+            border-radius: 999px;
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 13px
+        }
+
+        .h1 {
+            font-size: 32px;
+            margin: 12px 0 6px
+        }
+
+        .lead {
+            color: var(--muted);
+            margin-bottom: 18px
+        }
+
+        .cta-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap
+        }
+
+        .btn {
+            background: linear-gradient(90deg, var(--accent), #5b21b6);
+            border: none;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600
+        }
+
+        .btn.ghost {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: var(--accent-2)
+        }
+
+        .card {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
+            padding: 18px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.03)
+        }
+
+        .hero-right {
+            display: flex;
+            flex-direction: column;
+            gap: 14px
+        }
+
+        .preview {
+            height: 420px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #061223;
+            display: flex;
+            flex-direction: column
+        }
+
+        .preview .top {
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), transparent)
+        }
+
+        .preview .content {
+            flex: 1;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-top: 22px
+        }
+
+        .feature {
+            padding: 14px;
+            border-radius: 10px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), transparent);
+            border: 1px solid rgba(255, 255, 255, 0.02)
+        }
+
+        .feature h4 {
+            margin: 0 0 6px
+        }
+
+        .muted {
+            color: var(--muted);
+            font-size: 14px
+        }
+
+        .integrations {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-top: 18px
+        }
+
+        .form-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px
+        }
+
+        input[type=text],
+        input[type=url],
+        select {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 10px;
+            border-radius: 8px;
+            color: inherit;
+            flex: 1
+        }
+
+        .small {
+            font-size: 13px;
+            color: var(--muted)
+        }
+
+        footer {
+            margin-top: 36px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 13px
+        }
+
+        @media (max-width:960px) {
+            .hero {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-right {
+                order: -1
+            }
+
+            .features {
+                grid-template-columns: repeat(2, 1fr)
+            }
+
+            .integrations {
+                grid-template-columns: 1fr
+            }
+
+            .container {
+                padding: 18px
+            }
+        }
+
+        @media (max-width:560px) {
+            .features {
+                grid-template-columns: 1fr
+            }
+
+            .h1 {
+                font-size: 22px
+            }
+        }
+
+        .toast {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            background: #081323;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            box-shadow: 0 6px 30px rgba(2, 6, 23, 0.6)
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <nav class="nav">
+            <div class="brand">
+                <div class="logo">P</div>
+                <div>
+                    <h1>Ping</h1>
+                    <div class="tag">Automated reminders via WhatsApp</div>
+                </div>
+            </div>
+            <div style="display:flex;gap:12px;align-items:center">
+                <a class="small" href="#features">Features</a>
+                <a class="small" href="#integrations">Integrations</a>
+                <button class="btn">Get Started</button>
+            </div>
+        </nav>
+
+        <section class="hero">
+            <div class="hero-left card">
+                <span class="eyebrow">New — Google Sheets Sync</span>
+                <h2 class="h1">Keep people on track, effortlessly</h2>
+                <p class="lead">Connect a Google Sheet, map phone numbers and messages, and Ping will send scheduled
+                    WhatsApp reminders automatically — no manual messaging needed.</p>
+                <div class="cta-row">
+                    <button class="btn" onclick="handleGetStarted()">Connect WhatsApp</button>
+                    <button class="btn ghost" onclick="openDocs()">View Docs</button>
+                </div>
+
+                <div class="features" id="features">
+                    <div class="feature">
+                        <h4>Sheet-driven</h4>
+                        <div class="muted">Use rows as recipients and templates for personalization.</div>
+                    </div>
+                    <div class="feature">
+                        <h4>Flexible Scheduling</h4>
+                        <div class="muted">Daily, weekly, or custom intervals per row.</div>
+                    </div>
+                    <div class="feature">
+                        <h4>Safe & Audited</h4>
+                        <div class="muted">Delivery logs and retry policies built in.</div>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="hero-right">
+                <div class="card preview">
+                    <div class="top">
+                        <div style="display:flex;align-items:center;gap:12px">
+                            <div
+                                style="width:44px;height:44px;border-radius:8px;background:url('https://images.unsplash.com/photo-1534126511673-b6899657816a?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3&s=') center/cover">
+                            </div>
+                            <div>
+                                <div style="font-weight:700">Team reminders</div>
+                                <div class="muted" style="font-size:13px">Next: Project standup — Tomorrow 9:00 AM</div>
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:8px;align-items:center">
+                            <div class="small muted">Status</div>
+                            <div
+                                style="background:linear-gradient(90deg,var(--accent),var(--accent-2));padding:6px 10px;border-radius:999px;font-weight:700">
+                                Active</div>
+                        </div>
+                    </div>
+                    <div class="content">
+                        <div class="muted">Preview message</div>
+                        <div
+                            style="background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);padding:12px;border-radius:10px">
+                            Hey {{Name}}, quick reminder: our daily standup is at 9:00 AM — see you there! 📣</div>
+                        <div style="display:flex;gap:8px;margin-top:6px">
+                            <button class="btn" onclick="copyPreview()">Copy</button>
+                            <button class="btn ghost" onclick="testSend()">Send Test</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="padding:12px">
+                    <div style="font-weight:700;margin-bottom:8px">Quick Setup</div>
+                    <div class="muted small">Connect your accounts and choose a sheet.</div>
+                    <div class="integrations" id="integrations">
+                        <div>
+                            <div style="font-weight:600">WhatsApp</div>
+                            <div class="small muted">Connect using your phone for secure messaging.</div>
+                            <div class="form-row">
+                                <input type="text" id="phone" placeholder="+1 555 555 5555">
+                                <button class="btn" onclick="connectWhatsApp()">Connect</button>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="font-weight:600">Google Sheets</div>
+                            <div class="small muted">Paste a shareable sheet link (view access)</div>
+                            <div class="form-row">
+                                <input type="url" id="sheet" placeholder="https://docs.google.com/spreadsheets/d/…">
+                                <button class="btn" onclick="linkGoogleSheet()">Link</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top:12px;display:flex;gap:8px">
+                        <select id="interval">
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                        <input type="text" id="time" placeholder="09:00 AM" style="width:120px">
+                        <button class="btn" onclick="enableSchedule()">Enable</button>
+                    </div>
+                </div>
+            </aside>
+        </section>
+
+        <footer>
+            <div>Made with care — <span class="muted">privacy-first, minimal permissions</span></div>
+        </footer>
+    </div>
+
+    <div id="toast" class="toast" style="display:none"></div>
+
+    <script>
+        function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3400) }
+        function handleGetStarted() { showToast('Start by linking your Google Sheet and WhatsApp') }
+        function openDocs() { window.open('https://example.com/docs', '_blank') }
+        function connectWhatsApp() { const phone = document.getElementById('phone').value; if (!phone) { showToast('Enter a phone number first'); return } showToast('WhatsApp connected (simulated)') }
+        function linkGoogleSheet() { const s = document.getElementById('sheet').value; if (!s) { showToast('Paste a Google Sheet link'); return } showToast('Google Sheet linked (simulated)') }
+        function enableSchedule() { const i = document.getElementById('interval').value; const t = document.getElementById('time').value; if (!t) { showToast('Select a time for reminders'); return } showToast('Schedule enabled: ' + i + ' @ ' + t) }
+        function copyPreview() { navigator.clipboard?.writeText('Hey {{Name}}, quick reminder: our daily standup is at 9:00 AM').then(() => showToast('Preview copied')) }
+        function testSend() { showToast('Test message sent (simulated)') }
+    </script>
+</body>
+
+</html>
